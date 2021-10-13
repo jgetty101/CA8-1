@@ -1,59 +1,43 @@
-import React from 'react';
-import NavBar from './NavBar.js';
-import ModeTabs from './ModeTabs.js';
-import LoginPage from './LoginPage.js';
-import AppMode from './AppMode.js';
+import { faCalendar } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import NavBar from "./NavBar.js";
+import SideMenu from "./SideMenu.js";
+import ModeTabs from "./ModeTabs.js";
+import FloatingButton from "./FloatingButton.js";
+import LoginPage from "./LoginPage.js";
+import FeedPage from "./FeedPage.js";
 
-class App extends React.Component {
+function App() {
+  const [showFeedPage, updateFeedPage] = useState(false);
 
-  constructor(props) {
-    super(props);
-    this.state = {mode: AppMode.LOGIN,
-                  menuOpen: false,
-                  modalOpen: false,
-                  userId: ""};
+  function toggleFeedPage() {
+    if (showFeedPage) {
+      updateFeedPage(false);
+    } else {
+      updateFeedPage(true);
+    }
   }
 
-  setMode = (newMode) => {
-    this.setState({mode: newMode});
-  }
+  return (
+    <div>
+      <NavBar title="Welcome to SpeedScore" />
+      <SideMenu />
+      <ModeTabs />
+      {showFeedPage ? (
+        <FeedPage updatePage={toggleFeedPage} />
+      ) : (
+        <LoginPage updatePage={toggleFeedPage} />
+      )}
 
-  toggleMenuOpen = () => {
-    this.setState(prevState => ({menuOpen: !prevState.menuOpen}));
-  }
-
-  toggleModalOpen = () => {
-    this.setState(prevState => ({dialogOpen: !prevState.dialogOpen}));
-  }
-
-  setUserId = (Id) => {
-    this.setState({userId: Id});
-  }
-
-  render() {
-    return (
-      <>
-        <NavBar mode={this.state.mode}
-                menuOpen={this.state.menuOpen}
-                toggleMenuOpen={this.state.toggleMenuOpen}
-                modalOpen={this.state.modalOpen}
-                toggleModalOpen={this.toggleModalOpen}
-                userId={this.state.userId}
-                setUserId={this.setUserid} />
-        {this.state.mode !== AppMode.LOGIN ? 
-          <ModeTabs mode={this.state.mode}
-                    setMode={this.setMode} 
-                    menuOpen={this.state.menuOpen}
-                    modalOpen={this.state.modalOpen}/> 
-            : null }
-        <LoginPage changeMode={this.handleChangeMode}
-                   menuOpen={this.state.menuOpen}
-                   modalOpen={this.state.dialogOpen}
-                   toggleModalOpen={this.state.toggleModalOpen} 
-                   userid={this.state.userId}/>
-      </>
-    ); 
-  }
-
+      <FloatingButton
+        icon={faCalendar}
+        label={"Log Round"}
+        action={() => {
+          alert("Log Round");
+        }}
+      />
+    </div>
+  );
 }
+
 export default App;
